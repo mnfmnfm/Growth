@@ -1,0 +1,15 @@
+{
+    "growthenv": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-growth-growthenv-153036-authRole",
+            "UnauthRoleArn": "arn:aws:iam::092793752763:role/amplify-growth-growthenv-153036-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::092793752763:role/amplify-growth-growthenv-153036-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "amplify-growth-growthenv-153036-deployment",
+            "UnauthRoleName": "amplify-growth-growthenv-153036-unauthRole",
+            "StackName": "amplify-growth-growthenv-153036",
+            "StackId": "arn:aws:cloudformation:us-west-2:092793752763:stack/amplify-growth-growthenv-153036/ff378c80-58ef-11ea-a82d-0a6d23b8818c",
+            "AmplifyAppId": "d1fbkyhh5cbvjm"
+        }
+    }
+}

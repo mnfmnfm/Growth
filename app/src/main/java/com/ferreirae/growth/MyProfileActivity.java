@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amazonaws.amplify.generated.graphql.UpdateMenteeMutation;
@@ -86,6 +88,37 @@ public class MyProfileActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 777 && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+
+            ImageView imageView = findViewById(R.id.imageView);
+            imageView.setImageURI(selectedImage);
+
+//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+//
+//            Cursor cursor = getContentResolver().query(selectedImage,
+//                    filePathColumn, null, null, null);
+//            cursor.moveToFirst();
+//
+//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//            String picturePath = cursor.getString(columnIndex);
+//            cursor.close();
+
+            // String picturePath contains the path of selected Image
+        }
+    }
+
+    public void pickImage(View v) {
+        Log.d("mnf", "button clicked");
+        Intent i = new Intent(
+                Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        startActivityForResult(i, 777);
     }
 
     public void goToMentorActivity(View v) {

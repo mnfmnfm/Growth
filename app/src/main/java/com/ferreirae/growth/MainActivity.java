@@ -3,7 +3,9 @@ package com.ferreirae.growth;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -16,6 +18,8 @@ import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
+
+import java.util.HashSet;
 
 import javax.annotation.Nonnull;
 
@@ -55,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
                                 // i is the user we were looking for!
                                 // move to the next activity and return!
                                 Intent intent = new Intent(MainActivity.this, MyProfileActivity.class);
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putString("username", username);
+                                editor.putString("id", i.id());
+                                editor.putStringSet("mentors",
+                                        i.mentors() == null ? new HashSet<String>() : new HashSet<String>(i.mentors()));
+                                editor.apply();
                                 startActivity(intent);
                                 return;
                             }
@@ -66,9 +77,14 @@ public class MainActivity extends AppCompatActivity {
                                 .enqueue(new GraphQLCall.Callback<CreateMenteeMutation.Data>() {
                                     @Override
                                     public void onResponse(@Nonnull Response<CreateMenteeMutation.Data> response) {
-                                        Intent intent = new Intent(MainActivity.this, MyProfileActivity.class);
+
+                                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                        SharedPreferences.Editor editor = preferences.edit();
+                                        editor.putString("username", username);
+                                        editor.putString("id", response.data().createMentee().id());
+                                        editor.putStringSet("mentors", new HashSet<String>());
+                                        editor.apply();Intent intent = new Intent(MainActivity.this, MyProfileActivity.class);
                                         startActivity(intent);
-                                        return;
                                     }
 
                                     @Override

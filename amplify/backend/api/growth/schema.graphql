@@ -1,0 +1,5 @@
+type Mentee @model {
+  id: ID!
+  name: String!
+  mentors: [String]
+}

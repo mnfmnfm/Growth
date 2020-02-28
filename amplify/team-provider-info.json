@@ -10,6 +10,11 @@
             "StackName": "amplify-growth-growthenv-153036",
             "StackId": "arn:aws:cloudformation:us-west-2:092793752763:stack/amplify-growth-growthenv-153036/ff378c80-58ef-11ea-a82d-0a6d23b8818c",
             "AmplifyAppId": "d1fbkyhh5cbvjm"
+        },
+        "categories": {
+            "auth": {
+                "growth2b81b570": {}
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
@@ -42,6 +43,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
@@ -190,20 +192,11 @@ public class MyProfileActivity extends AppCompatActivity {
                         .s3Client(new AmazonS3Client(AWSMobileClient.getInstance()))
                         .build();
 
-        File file = new File(getApplicationContext().getFilesDir(), "sample.txt");
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.append("Howdy World!");
-            writer.close();
-        }
-        catch(Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-
+        final String uuid = UUID.randomUUID().toString();
         TransferObserver uploadObserver =
                 transferUtility.upload(
-                        "public/sample.txt",
-                        new File(picturePath));
+                        "public/" + uuid,
+                        new File(picturePath), CannedAccessControlList.PublicRead);
 
         // Attach a listener to the observer to get state update and progress notifications
         uploadObserver.setTransferListener(new TransferListener() {
@@ -211,7 +204,23 @@ public class MyProfileActivity extends AppCompatActivity {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
-                    // Handle a completed upload.
+                    SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    UpdateMenteeInput input = UpdateMenteeInput.builder()
+                            .id(p.getString("id", null))
+                            .pictureUrl("public/" + uuid)
+                            .build();
+                    mAWSAppSyncClient.mutate(UpdateMenteeMutation.builder().input(input).build())
+                            .enqueue(new GraphQLCall.Callback<UpdateMenteeMutation.Data>() {
+                                @Override
+                                public void onResponse(@Nonnull Response<UpdateMenteeMutation.Data> response) {
+                                    Log.i("mnf", "did the update");
+                                }
+
+                                @Override
+                                public void onFailure(@Nonnull ApolloException e) {
+
+                                }
+                            });
                 }
             }
 

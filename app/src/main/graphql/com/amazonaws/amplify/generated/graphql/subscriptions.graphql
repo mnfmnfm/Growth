@@ -3,6 +3,7 @@ subscription OnCreateMentee {
   onCreateMentee {
     id
     name
+    pictureUrl
     mentors
   }
 }
@@ -10,6 +11,7 @@ subscription OnUpdateMentee {
   onUpdateMentee {
     id
     name
+    pictureUrl
     mentors
   }
 }
@@ -17,6 +19,7 @@ subscription OnDeleteMentee {
   onDeleteMentee {
     id
     name
+    pictureUrl
     mentors
   }
 }

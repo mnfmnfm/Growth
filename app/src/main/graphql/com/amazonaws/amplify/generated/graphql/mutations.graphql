@@ -6,6 +6,7 @@ mutation CreateMentee(
   createMentee(input: $input, condition: $condition) {
     id
     name
+    pictureUrl
     mentors
   }
 }
@@ -16,6 +17,7 @@ mutation UpdateMentee(
   updateMentee(input: $input, condition: $condition) {
     id
     name
+    pictureUrl
     mentors
   }
 }
@@ -26,6 +28,7 @@ mutation DeleteMentee(
   deleteMentee(input: $input, condition: $condition) {
     id
     name
+    pictureUrl
     mentors
   }
 }

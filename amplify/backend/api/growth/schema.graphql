@@ -1,5 +1,6 @@
 type Mentee @model {
   id: ID!
   name: String!
+  pictureUrl: String
   mentors: [String]
 }

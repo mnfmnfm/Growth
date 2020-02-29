@@ -3,6 +3,7 @@ query GetMentee($id: ID!) {
   getMentee(id: $id) {
     id
     name
+    pictureUrl
     mentors
   }
 }
@@ -15,6 +16,7 @@ query ListMentees(
     items {
       id
       name
+      pictureUrl
       mentors
     }
     nextToken

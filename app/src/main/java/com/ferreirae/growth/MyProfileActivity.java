@@ -26,6 +26,7 @@ import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferService;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -69,12 +70,26 @@ public class MyProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
 
+        getApplicationContext().startService(new Intent(getApplicationContext(), TransferService.class));
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String username = p.getString("username", null);
         currentMentors = p.getStringSet("mentors", new HashSet<String>());
         TextView textView = findViewById(R.id.textView3);
         textView.setText(username);
 
+        // Get the intent that started this activity
+        Intent intent = getIntent();
+
+        // Figure out what to do based on the intent type
+        String type = intent.getType();
+        if (type != null && type.contains("image/")) {
+            // Handle intents with image data ...
+            Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if (imageUri != null) {
+                imagePicked(imageUri);
+            }
+
+        }
         mAWSAppSyncClient = AWSAppSyncClient.builder()
                 .context(getApplicationContext())
                 .awsConfiguration(new AWSConfiguration(getApplicationContext()))
@@ -128,15 +143,18 @@ public class MyProfileActivity extends AppCompatActivity {
         if (requestCode == 777 && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
 
-            ImageView imageView = findViewById(R.id.imageView);
-            imageView.setImageURI(selectedImage);
-
-            // try to upload that image
-
-            uploadWithTransferUtility(selectedImage);
-
+            imagePicked(selectedImage);
 
         }
+    }
+
+    private void imagePicked(Uri uri) {
+        ImageView imageView = findViewById(R.id.imageView);
+        imageView.setImageURI(uri);
+
+        // try to upload that image
+
+        uploadWithTransferUtility(uri);
     }
 
     public void pickImage(View v) {
